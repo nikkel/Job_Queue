@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  backend:
+    container_name: backend
+    build: ./api/
+    ports:
+      - '5001:5000'
+  redis:
+    container_name: redis
+    image: 'redis:alpine'
