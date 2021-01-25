@@ -68,8 +68,8 @@ class TaskCreate(Resource):
 
 
 class TaskList(Resource):
-    jwt_required()
 
+    @jwt_required()
     def get(self):
 
         # Return a list of tasks and their details
