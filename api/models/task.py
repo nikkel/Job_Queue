@@ -46,6 +46,10 @@ class TaskModel(db.Model):
 
     def update_from_queue(self):
         job = queue.fetch_job(self.job_id)
+        # Update if it's not failed or finished
+        if self.status in ['failed', 'finished']:
+            return self.json()
+
         self.status = job.get_status()
         self.result = job.result
         self.created_at = job.created_at
@@ -61,7 +65,11 @@ class TaskModel(db.Model):
         job = queue.fetch_job(self.job_id)
         return job.get_position()
 
-    def json(self):
+    def json(self, update=False):
+        # Fetch the most current data from the queue
+        if update:
+            self.update_from_queue()
+
         return {
             'id': self.id,
             'job_id': self.job_id,
@@ -86,7 +94,8 @@ class TaskModel(db.Model):
 
     @classmethod
     def find_by_job_id(cls, job_id):
-        result = cls.query.filter_by(job_id=job_id).first()
+        result: TaskModel = cls.query.filter_by(job_id=job_id).first()
+        result.update_from_queue()
         if result.user_id == current_identity.id:
             return result
         else:
@@ -94,9 +103,10 @@ class TaskModel(db.Model):
 
     @classmethod
     def find_by_id(cls, id):
-        result = cls.query.filter_by(id=id).first()
+        result: TaskModel = cls.query.filter_by(id=id).first()
         if result:
             if result.user_id == current_identity.id:
+                result.update_from_queue()
                 return result
             else:
                 return None

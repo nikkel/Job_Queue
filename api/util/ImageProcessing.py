@@ -1,4 +1,4 @@
-try: 
+try:
     from PIL import Image
 except ImportError:
     import Image
@@ -7,8 +7,8 @@ import time
 
 
 def process_image(image):
-    try: 
+    try:
         time.sleep(15)
         return pytesseract.image_to_string(image)
-    except: 
-        pass 
+    except:
+        pass
