@@ -32,7 +32,7 @@ def create_app():
     # Create Routes
     api.add_resource(Index, '/')
     api.add_resource(TaskCreate, '/user/task')
-    api.add_resource(Task, '/user/task/<int:id>')
+    api.add_resource(Task, '/user/task/<int:task_id>')
     api.add_resource(TaskList, '/user/tasks')
 
     # Create database tables
