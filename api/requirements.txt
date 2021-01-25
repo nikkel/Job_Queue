@@ -2,3 +2,7 @@ Flask==1.1.2
 Flask-RESTful==0.3.8
 redis==3.5.3
 python-dotenv==0.15.0
+Flask-JWT==0.3.2
+Flask-SQLAlchemy==2.4.4
+PyMySQL==1.0.2
+cryptography==3.3.1
