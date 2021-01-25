@@ -1,2 +1,4 @@
-flask
-redis
+Flask==1.1.2
+Flask-RESTful==0.3.8
+redis==3.5.3
+python-dotenv==0.15.0
