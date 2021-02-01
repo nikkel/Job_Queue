@@ -39,11 +39,6 @@ def create_app():
     api.add_resource(Task, '/user/task/<int:task_id>')
     api.add_resource(TaskList, '/user/tasks')
 
-    # @app.errorhandler(TypeError)
-    @app.errorhandler(TypeError)
-    def handle_any_exception(e):
-        return {'message': 'Something went wrong!'}, 500
-
     # Create database tables
     with app.app_context():
         db.create_all()

@@ -45,20 +45,23 @@ class TaskModel(db.Model):
         db.session.commit()
 
     def update_from_queue(self):
-        job = queue.fetch_job(self.job_id)
-        # Update if it's not failed or finished
-        if self.status in ['failed', 'finished']:
-            return self.json()
+        try:
+            job = queue.fetch_job(self.job_id)
+            # Update if it's not failed or finished
+            if self.status in ['failed', 'finished']:
+                return self.json()
 
-        self.status = job.get_status()
-        self.result = job.result
-        self.created_at = job.created_at
-        self.started_at = job.started_at
-        self.ended_at = job.ended_at
-        self.enqueued_at = job.enqueued_at
-        self.origin = job.origin
+            self.status = job.get_status()
+            self.result = job.result
+            self.created_at = job.created_at
+            self.started_at = job.started_at
+            self.ended_at = job.ended_at
+            self.enqueued_at = job.enqueued_at
+            self.origin = job.origin
 
-        self.save_to_db()
+            self.save_to_db()
+        except:
+            pass
         return self.json()
 
     def get_job_position(self):
