@@ -1,12 +1,22 @@
 version: '3.9'
 services:
+  mysql:
+    container_name: mysql
+    image: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: queue_db
+      MYSQL_USER: queue_user
+      MYSQL_PASSWORD: queue_password
+      MYSQL_ROOT_PASSWORD: root_password
   frontend:
     container_name: frontend
     build:
       context: ./frontend/
       dockerfile: Dockerfile
     ports:
-      - '5000:3000'
+      - '3000:3000'
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -16,7 +26,20 @@ services:
     container_name: backend
     build: ./api/
     ports:
-      - '5001:5000'
+      - '5000:5000'
+    depends_on:
+      - mysql
+      - redis
   redis:
     container_name: redis
     image: 'redis:alpine'
+    ports:
+      - '6379:6379'
+  workers:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile.worker
+    depends_on:
+      - mysql
+      - backend
+      - redis

@@ -34,3 +34,7 @@
 ## Bonus tasks
 
 ---
+
+## Run Commands
+
+docker-compose up --build --scale workers=3
