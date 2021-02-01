@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import Api from '../../Api';
+import Api from '../../api';
 import { userContext } from '../../contexts/userContext';
 
 const UploadBox = () => {
@@ -31,7 +31,6 @@ const UploadBox = () => {
       // Details of the uploaded file
       try {
         const result = await Api.task.create(formData);
-        console.log(result);
         toggleDisableUploads();
         Swal.mixin({
           toast: true,
