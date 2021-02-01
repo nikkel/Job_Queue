@@ -1,6 +1,6 @@
+import redis
 from os import getenv
-from redis import Redis
 from rq import Queue
 
-redis = Redis(getenv('REDIS_URI'))
-queue = Queue(connection=redis)
+conn = redis.from_url(getenv('REDIS_URI', 'redis://localhost:6379'))
+queue = Queue(connection=conn)

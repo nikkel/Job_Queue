@@ -1,7 +1,8 @@
 from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, reqparse
 from werkzeug import datastructures
-from PIL import Image
+from werkzeug.datastructures import FileStorage
+from PIL import Image, UnidentifiedImageError
 
 from util.queue import queue
 from util.ImageProcessing import process_image
@@ -35,14 +36,21 @@ class TaskCreate(Resource):
     @jwt_required()
     def post(self):
         # Get post args and validate input
-        parse = reqparse.RequestParser()
-        parse.add_argument(
-            'file',
-            type=datastructures.FileStorage,
-            location='files'
-        )
-        file = parse.parse_args()['file']
-        image = Image.open(file)
+        try:
+            parse = reqparse.RequestParser()
+            parse.add_argument(
+                'file',
+                type=FileStorage,
+                location='files',
+                required=True,
+            )
+            file: FileStorage = parse.parse_args()['file']
+            image_name = file.filename
+            image = Image.open(file)
+            print(file.filename)
+            # image.save(image. )
+        except UnidentifiedImageError:
+            return {'message', 'not an image file'}, 404
 
         # Schedule task using Redis
         try:
@@ -61,10 +69,10 @@ class TaskCreate(Resource):
             )
             task.save_to_db()
         except Exception as err:
-            return {'message': 'Unable to schedule task'}, 500
+            return {'message': err.args}, 500
 
         # Return success or failed for created task
-        return task.json(), 404
+        return task.json(), 201
 
 
 class TaskList(Resource):
@@ -73,6 +81,6 @@ class TaskList(Resource):
     def get(self):
 
         # Return a list of tasks and their details
-        data = [task.json() for task in TaskModel.query.all()
-                if task.json()['user_id'] == current_identity.id]
+        data = [task.json(update=True) for task in TaskModel.query.filter_by(
+            user_id=current_identity.id)]
         return {'tasks': data}

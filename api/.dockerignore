@@ -1,0 +1,8 @@
+.dockerignore
+Dockerfile
+__pycache__
+.venv
+.env
+Dockerfile.worker
+.vscode
+dump.rdb

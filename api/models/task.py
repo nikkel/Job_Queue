@@ -62,8 +62,11 @@ class TaskModel(db.Model):
         return self.json()
 
     def get_job_position(self):
-        job = queue.fetch_job(self.job_id)
-        return job.get_position()
+        try:
+            job = queue.fetch_job(self.job_id).get_position()
+            return job
+        except Exception:
+            return None
 
     def json(self, update=False):
         # Fetch the most current data from the queue
@@ -94,8 +97,7 @@ class TaskModel(db.Model):
 
     @classmethod
     def find_by_job_id(cls, job_id):
-        result: TaskModel = cls.query.filter_by(job_id=job_id).first()
-        result.update_from_queue()
+        result = cls.query.filter_by(job_id=job_id).first()
         if result.user_id == current_identity.id:
             return result
         else:
@@ -103,7 +105,7 @@ class TaskModel(db.Model):
 
     @classmethod
     def find_by_id(cls, id):
-        result: TaskModel = cls.query.filter_by(id=id).first()
+        result = cls.query.filter_by(id=id).first()
         if result:
             if result.user_id == current_identity.id:
                 result.update_from_queue()
