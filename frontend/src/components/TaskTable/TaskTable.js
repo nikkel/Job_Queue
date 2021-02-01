@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/core';
-import Api from '../../Api';
+import Api from '../../api';
 import Swal from 'sweetalert2';
 import PropagateLoader from 'react-spinners/PropagateLoader';
 
@@ -30,7 +30,15 @@ const TaskTable = () => {
 
   const togglePopup = (customer) => {
     Swal.fire({
-      title: `Currently viewing job ${customer.job_id}!`,
+      title: `Job ID: ${customer.id}`,
+      html: `
+      <b>Job Name:</b><br/>
+      ${customer.job_id}<br/><br/>
+      <b>Started:</b> ${customer.created_at}<br/>
+      <b>Ended:</b> ${customer.ended_at}<br/><br/>
+      <h4>Result</h4>
+      ${customer.result}
+      `,
       text: `result: ${customer.result}.`,
       isUploading: false,
     });
