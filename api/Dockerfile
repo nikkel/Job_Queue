@@ -12,7 +12,7 @@ ENV REDIS_URI=redis://redis:6379
 
 # RUN apk add --no-cache gcc musl-dev linux-headers
 RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add --virtual build-deps gcc g++ python3-dev musl-dev \
     && apk add tesseract-ocr \
     && apk add python3 \
     && apk add jpeg-dev zlib-dev libjpeg  \
