@@ -2,7 +2,7 @@ version: '3.9'
 services:
   mysql:
     container_name: mysql
-    image: mysql
+    image: mysql:latest
     ports:
       - '3306:3306'
     environment:
@@ -10,6 +10,8 @@ services:
       MYSQL_USER: queue_user
       MYSQL_PASSWORD: queue_password
       MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - ./data:/var/lib/mysql
   frontend:
     container_name: frontend
     build:
@@ -30,6 +32,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - frontend
   redis:
     container_name: redis
     image: 'redis:alpine'
