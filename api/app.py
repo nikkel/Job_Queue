@@ -1,12 +1,14 @@
 from os import getenv
+import time
 from typing import Type
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_restful import Api
-from flask_jwt import JWT
+from flask_jwt_extended import JWTManager, create_access_token
+from sqlalchemy.exc import OperationalError
 
 from util.db import db
-from util.security import authenticate, identify
+from util.security import authenticate
 
 from resources.index import Index
 from resources.task import Task, TaskList, TaskCreate
@@ -24,14 +26,20 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = getenv(
         'MYSQL_URI', 'mysql+pymysql://queue_user:queue_password@localhost/queue_db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JWT_SECRET_KEY'] = getenv('FLASK_SECRET_KEY', 'default')
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
     db.init_app(app)
 
     # Authentication JWT
-    JWT(
-        app=app,
-        authentication_handler=authenticate,
-        identity_handler=identify
-    )
+    JWTManager(app)
+
+    @app.route('/auth', methods=['POST'])
+    def login():
+        data = request.get_json()
+        user = authenticate(data.get('username', ''), data.get('password', ''))
+        if user:
+            return jsonify(access_token=create_access_token(identity=str(user.id)))
+        return jsonify(message='Invalid credentials'), 401
 
     # Create Routes
     api.add_resource(Index, '/')
@@ -39,9 +47,16 @@ def create_app():
     api.add_resource(Task, '/user/task/<int:task_id>')
     api.add_resource(TaskList, '/user/tasks')
 
-    # Create database tables
+    # Create database tables (retry until MySQL is ready)
     with app.app_context():
-        db.create_all()
+        for attempt in range(10):
+            try:
+                db.create_all()
+                break
+            except OperationalError:
+                if attempt == 9:
+                    raise
+                time.sleep(3)
 
     return app
 

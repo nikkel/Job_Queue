@@ -1,23 +1,18 @@
 import Axios from 'axios';
 
 const backend = Axios.create({
-  baseURL: process.env.BACKEND_URL || 'http://127.0.0.1:5000',
+  baseURL: import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001',
 });
 
-let token = localStorage.getItem('token');
+let token = null;
 export function setToken(t) {
-  if (t) {
-    localStorage.setItem('token', t);
-  } else {
-    localStorage.removeItem('token');
-  }
-
-  token = t;
+  token = t || null;
+  localStorage.setItem('token', t || '');
 }
 
 function getHeaders(config = { file: false }) {
   const headers = {
-    headers: { Authorization: `JWT ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
   };
   if (config['file']) headers['Content-Type'] = 'multipart/form-data';
 

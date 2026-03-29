@@ -1,6 +1,5 @@
 from util.queue import queue
 from util.db import db
-from flask_jwt import current_identity
 
 
 class TaskModel(db.Model):
@@ -47,20 +46,30 @@ class TaskModel(db.Model):
     def update_from_queue(self):
         try:
             job = queue.fetch_job(self.job_id)
-            # Update if it's not failed or finished
-            if self.status in ['failed', 'finished']:
+            if job is None:
                 return self.json()
 
-            self.status = job.get_status()
-            self.result = job.result
+            self.status = job.get_status().value
+
+            # Fetch result for finished jobs
+            if self.status == 'finished':
+                try:
+                    self.result = job.latest_result().return_value
+                except Exception:
+                    self.result = None
+            elif self.status == 'failed':
+                try:
+                    self.result = str(job.latest_result().exc_string)
+                except Exception:
+                    self.result = 'failed'
+
             self.created_at = job.created_at
             self.started_at = job.started_at
             self.ended_at = job.ended_at
             self.enqueued_at = job.enqueued_at
             self.origin = job.origin
-
             self.save_to_db()
-        except:
+        except Exception:
             pass
         return self.json()
 

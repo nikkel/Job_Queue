@@ -1,8 +1,9 @@
-from flask_jwt import jwt_required, current_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
 from werkzeug import datastructures
 from werkzeug.datastructures import FileStorage
 from PIL import Image, UnidentifiedImageError
+import io
 
 from util.queue import queue
 from util.ImageProcessing import process_image
@@ -54,13 +55,15 @@ class TaskCreate(Resource):
 
         # Schedule task using Redis
         try:
-            queue_job = queue.enqueue(process_image, image)
+            image_bytes = io.BytesIO()
+            image.save(image_bytes, format=image.format or 'PNG')
+            queue_job = queue.enqueue(process_image, image_bytes.getvalue())
 
             task = TaskModel(
                 queue_job.id,
-                current_identity.id,
-                queue_job.get_status(),
-                queue_job.result,
+                int(get_jwt_identity()),
+                queue_job.get_status().value,
+                None,
                 queue_job.created_at,
                 queue_job.started_at,
                 queue_job.ended_at,
@@ -82,5 +85,5 @@ class TaskList(Resource):
 
         # Return a list of tasks and their details
         data = [task.json(update=True) for task in TaskModel.query.filter_by(
-            user_id=current_identity.id)]
+            user_id=int(get_jwt_identity()))]
         return {'tasks': data}

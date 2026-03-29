@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM python:3.13-alpine
 
 LABEL maintainer="Ryan Clark"
 WORKDIR /code
@@ -10,16 +10,11 @@ ENV FLASK_SECRET_KEY=fu-F-SRF43F$gfQEgerG(U£$-i-jds
 ENV MYSQL_URI=mysql+pymysql://queue_user:queue_password@mysql/queue_db
 ENV REDIS_URI=redis://redis:6379
 
-# RUN apk add --no-cache gcc musl-dev linux-headers
 RUN apk update \
-    && apk add --virtual build-deps gcc g++ python3-dev musl-dev \
+    && apk add --virtual build-deps gcc g++ musl-dev \
     && apk add tesseract-ocr \
-    && apk add python3 \
-    && apk add jpeg-dev zlib-dev libjpeg  \
-    && apk add libffi-dev openssl-dev \
-    py-pip \
-    && pip install virtualenv
-# && apk del build-deps
+    && apk add jpeg-dev zlib-dev libjpeg \
+    && apk add libffi-dev openssl-dev
 
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
