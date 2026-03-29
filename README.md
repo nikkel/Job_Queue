@@ -38,3 +38,4 @@
 ## Run Commands
 
 docker-compose up --build --scale workers=3
+docker-compose down -v && docker-compose up --build
