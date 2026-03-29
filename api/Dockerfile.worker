@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM python:3.13-alpine
 
 LABEL maintainer="Ryan Clark"
 ENV DIR /home/worker/
@@ -10,17 +10,14 @@ ENV FLASK_SECRET_KEY=fu-F-SRF43F$gfQEgerG(U£$-i-jds
 ENV MYSQL_URI=mysql+pymysql://queue_user:queue_password@mysql/queue_db
 ENV REDIS_URI=redis://redis:6379
 
-RUN mkdir home/worker
+RUN mkdir -p /home/worker
 WORKDIR /home/worker
 
 RUN apk update \
-    && apk add --virtual build-deps gcc g++ python3-dev musl-dev \
-    && apk add tesseract-ocr \
-    && apk add python3 \
+    && apk add --virtual build-deps gcc g++ musl-dev \
+    && apk add tesseract-ocr tesseract-ocr-data-eng \
     && apk add jpeg-dev zlib-dev libjpeg \
-    && apk add libffi-dev openssl-dev \
-    py-pip \
-    && pip install virtualenv
+    && apk add libffi-dev openssl-dev
 
 COPY . $DIR
 

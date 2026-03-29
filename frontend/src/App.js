@@ -4,7 +4,7 @@ import { userContext } from './contexts/userContext';
 import Api from './api';
 
 import CircleLoader from 'react-spinners/CircleLoader';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import './App.css';
 
 const App = (props) => {
@@ -13,12 +13,8 @@ const App = (props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
-      login('admin');
-    } else {
-      setIsLoading(false);
-    }
-  });
+    login('admin');
+  }, []);
 
   async function login(username) {
     let token = await Api.account.login(username);
@@ -32,16 +28,11 @@ const App = (props) => {
 
   return (
     <div>
+      {/* Circle Loader needs to be centred it take cssOverride with is a CSSProperties object */}
       <CircleLoader
         color={'#000000'}
         loading={isLoading}
-        css={css`
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          padding: 10px;
-        `}
+        cssOverride={{ display: 'block', margin: '0 auto' }}
         size={400}
       />
       {isLoading ? (

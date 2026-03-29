@@ -1,8 +1,7 @@
-version: '3.9'
 services:
   mysql:
     container_name: mysql
-    image: mysql:latest
+    image: mysql:8.4
     ports:
       - '3306:3306'
     environment:
@@ -12,6 +11,12 @@ services:
       MYSQL_ROOT_PASSWORD: root_password
     volumes:
       - ./data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
   frontend:
     container_name: frontend
     build:
@@ -20,22 +25,27 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.js:/app/vite.config.js
     environment:
-      - CHOKIDAR_USEPOLLING=true
+      - VITE_BACKEND_URL=http://localhost:5001
   backend:
     container_name: backend
     build: ./api/
     ports:
-      - '5000:5000'
+      - '5001:5000'
     depends_on:
-      - mysql
-      - redis
-      - frontend
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      frontend:
+        condition: service_started
   redis:
     container_name: redis
-    image: 'redis:alpine'
+    image: 'redis:7-alpine'
     ports:
       - '6379:6379'
   workers:
@@ -43,6 +53,9 @@ services:
       context: ./api/
       dockerfile: Dockerfile.worker
     depends_on:
-      - mysql
-      - backend
-      - redis
+      mysql:
+        condition: service_healthy
+      backend:
+        condition: service_started
+      redis:
+        condition: service_started

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import Api from '../../api';
 import Swal from 'sweetalert2';
 import PropagateLoader from 'react-spinners/PropagateLoader';
@@ -61,12 +61,12 @@ const TaskTable = () => {
           <PropagateLoader
             color={'#000000'}
             loading={isLoading}
-            css={css`
-              position: absolute;
-              left: 50%;
-              transform: translate(-50%);
-              padding: 10px;
-            `}
+            cssOverride={{
+              position: 'absolute',
+              left: '50%',
+              transform: 'translate(-50%)',
+              padding: '10px',
+            }}
             size={10}
           />
           {data &&
