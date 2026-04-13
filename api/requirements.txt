@@ -8,5 +8,5 @@ PyMySQL==1.1.2
 cryptography==44.0.2
 rq==2.7.0
 pytesseract==0.3.13
-Pillow==11.2.1
+Pillow==12.2.0
 Flask-Cors==6.0.2
