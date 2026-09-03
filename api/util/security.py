@@ -19,8 +19,7 @@ def authenticate(username, password):
     user = UserModel.registerUser(sanitized_username)
     user.save_to_db()
 
-    # Get the new user from the db and return user
-    return UserModel.find_by_username(username)
+    return user
 
 
 def identify(payload):

@@ -1,0 +1,34 @@
+# Auto-merges Dependabot PRs (all update types, including major) once the
+# `CI` workflow's required status checks pass.
+#
+# One-time manual setup this depends on (can't be done from a workflow file):
+#   1. Settings -> General -> Pull Requests -> enable "Allow auto-merge".
+#   2. Settings -> Branches -> add a protection rule for `main` that requires
+#      the `Backend tests (pytest)` and `Frontend tests (vitest)` status
+#      checks (from ci.yml) before merging.
+# Without both of those, `gh pr merge --auto` below will queue the merge but
+# it will never actually complete.
+name: Dependabot auto-merge
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Enable auto-merge for the Dependabot PR
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

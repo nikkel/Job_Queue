@@ -1,7 +1,7 @@
 FROM python:3.13-alpine
 
 LABEL maintainer="Ryan Clark"
-ENV DIR /home/worker/
+ENV DIR=/home/worker/
 ENV FLASK_APP=app
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_ENV=production
