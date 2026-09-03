@@ -91,6 +91,12 @@ describe('TaskTable', () => {
     expect(Swal.fire).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'Job ID: 7' })
     );
+    // Regression check: only real SweetAlert2 options should be passed --
+    // this call used to include a stray `isUploading` key (copy-paste
+    // leftover from UploadBox's unrelated state) that SweetAlert2 warns
+    // about as an unknown parameter.
+    const callArgs = Swal.fire.mock.calls[0][0];
+    expect(Object.keys(callArgs).sort()).toEqual(['html', 'text', 'title']);
   });
 
   test('silently handles a failed fetch', async () => {

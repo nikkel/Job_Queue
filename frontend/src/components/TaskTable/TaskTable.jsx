@@ -40,7 +40,6 @@ const TaskTable = () => {
       ${customer.result}
       `,
       text: `result: ${customer.result}.`,
-      isUploading: false,
     });
   };
 
