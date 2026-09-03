@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import Api from '../../api';
 import Swal from 'sweetalert2';
-import PropagateLoader from 'react-spinners/PropagateLoader';
+import { PropagateLoader } from 'react-spinners';
 
 const TaskTable = () => {
   const [data, setData] = useState([]);
@@ -40,12 +40,22 @@ const TaskTable = () => {
       ${customer.result}
       `,
       text: `result: ${customer.result}.`,
-      isUploading: false,
     });
   };
 
   return (
     <div className='row'>
+      <PropagateLoader
+        color={'#000000'}
+        loading={isLoading}
+        cssOverride={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translate(-50%)',
+          padding: '10px',
+        }}
+        size={10}
+      />
       <table className='table table-bordered'>
         <thead className='thead-light'>
           <tr>
@@ -58,17 +68,6 @@ const TaskTable = () => {
           </tr>
         </thead>
         <tbody>
-          <PropagateLoader
-            color={'#000000'}
-            loading={isLoading}
-            cssOverride={{
-              position: 'absolute',
-              left: '50%',
-              transform: 'translate(-50%)',
-              padding: '10px',
-            }}
-            size={10}
-          />
           {data &&
             data.map((task) => (
               <tr key={task.id}>

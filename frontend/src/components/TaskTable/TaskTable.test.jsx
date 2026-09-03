@@ -37,6 +37,16 @@ describe('TaskTable', () => {
     expect(screen.getByRole('table')).toBeInTheDocument();
   });
 
+  test('the loading spinner is not nested inside tbody (only <tr> is valid there)', () => {
+    Api.task.getAll.mockResolvedValue({ tasks: [] });
+    const { container } = render(<TaskTable />);
+
+    const tbody = container.querySelector('tbody');
+    for (const child of tbody.children) {
+      expect(child.tagName).toBe('TR');
+    }
+  });
+
   test('polls the task list and renders fetched rows', async () => {
     Api.task.getAll.mockResolvedValue({
       tasks: [
@@ -81,6 +91,12 @@ describe('TaskTable', () => {
     expect(Swal.fire).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'Job ID: 7' })
     );
+    // Regression check: only real SweetAlert2 options should be passed --
+    // this call used to include a stray `isUploading` key (copy-paste
+    // leftover from UploadBox's unrelated state) that SweetAlert2 warns
+    // about as an unknown parameter.
+    const callArgs = Swal.fire.mock.calls[0][0];
+    expect(Object.keys(callArgs).sort()).toEqual(['html', 'text', 'title']);
   });
 
   test('silently handles a failed fetch', async () => {
