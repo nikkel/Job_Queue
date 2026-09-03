@@ -1,70 +1,35 @@
-# Getting Started with Create React App
+# Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React 19 + Vite single-page app for uploading images and tracking their OCR processing jobs.
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, run:
 
-### `yarn start`
+### `npm install`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Installs dependencies.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### `npm run start`
 
-### `yarn test`
+Runs the app in development mode with the Vite dev server on [http://localhost:3000](http://localhost:3000). Set `VITE_BACKEND_URL` to point at your API (defaults to `http://127.0.0.1:5001`).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `npm run build`
 
-### `yarn build`
+Builds the app for production into the `dist/` folder.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `npm run preview`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Serves the production build from `dist/` locally, for a final sanity check before deploying.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `npm run test`
 
-### `yarn eject`
+Runs the Vitest suite once with coverage (this is the command CI uses). Coverage reports are written to `coverage/` (`text` summary in the terminal, plus `html` and `lcov` reports).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### `npm run test:watch`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Runs Vitest in interactive watch mode while developing.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Testing
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Tests live alongside the code they cover (`*.test.js` / `*.test.jsx`) and use [Vitest](https://vitest.dev) + [React Testing Library](https://testing-library.com/react). API calls are mocked at the module boundary (`axios`, or the internal `Api`/`Backend` modules) rather than hitting a live backend, so the suite runs hermetically and fast. Coverage thresholds are enforced in `vite.config.js` under `test.coverage.thresholds`.

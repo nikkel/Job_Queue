@@ -1,3 +1,5 @@
+from flask_jwt_extended import get_jwt_identity
+
 from util.queue import queue
 from util.db import db
 
@@ -100,30 +102,11 @@ class TaskModel(db.Model):
         }
 
     @classmethod
-    def find_by_user_id(cls, user_id):
-        result = cls.query.filter_by(user_id=user_id).first()
-        if result.user_id == current_identity.id:
-            return result
-        else:
-            return None
-
-    @classmethod
-    def find_by_job_id(cls, job_id):
-        result = cls.query.filter_by(job_id=job_id).first()
-        if result.user_id == current_identity.id:
-            return result
-        else:
-            return None
-
-    @classmethod
     def find_by_id(cls, id):
         result = cls.query.filter_by(id=id).first()
-        if result:
-            if result.user_id == current_identity.id:
-                result.update_from_queue()
-                return result
-            else:
-                return None
+        if result and result.user_id == int(get_jwt_identity()):
+            result.update_from_queue()
+            return result
         return None
 
     @classmethod

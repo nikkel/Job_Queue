@@ -46,12 +46,9 @@ class TaskCreate(Resource):
                 required=True,
             )
             file: FileStorage = parse.parse_args()['file']
-            image_name = file.filename
             image = Image.open(file)
-            print(file.filename)
-            # image.save(image. )
         except UnidentifiedImageError:
-            return {'message', 'not an image file'}, 404
+            return {'message': 'not an image file'}, 404
 
         # Schedule task using Redis
         try:

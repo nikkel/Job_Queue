@@ -1,0 +1,6 @@
+[run]
+omit =
+    worker.py
+    tests/*
+    .venv/*
+    */__pycache__/*

@@ -37,5 +37,34 @@
 
 ## Run Commands
 
+```
 docker-compose up --build --scale workers=3
 docker-compose down -v && docker-compose up --build
+```
+
+## Running Tests
+
+Backend (Python/pytest, run from `api/`):
+
+```
+cd api
+pip install -r requirements.txt -r requirements-dev.txt
+pytest
+```
+
+Frontend (Vitest, run from `frontend/`):
+
+```
+cd frontend
+npm install
+npm run test
+```
+
+Both commands run their full suite with coverage and are what CI runs on every pull request (see `.github/workflows/ci.yml`).
+
+## Dependabot Auto-merge
+
+`.github/dependabot.yml` opens weekly PRs for npm (`frontend`), pip (`api`), and GitHub Actions updates. `.github/workflows/dependabot-automerge.yml` auto-merges those PRs (any update type, including major) once the CI checks above pass. This requires two one-time repo settings that can't be set from a workflow file:
+
+1. Settings → General → Pull Requests → enable "Allow auto-merge".
+2. Settings → Branches → add a protection rule for `main` requiring the `Backend tests (pytest)` and `Frontend tests (vitest)` status checks.

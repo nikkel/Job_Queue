@@ -2,22 +2,31 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "axios": "^1.7.9",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-spinners": "^0.15.0",
-    "sweetalert2": "^11.17.2",
-    "web-vitals": "^4.2.4"
+    "axios": "^1.20.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-spinners": "^0.17.0",
+    "sweetalert2": "^11.26.25",
+    "web-vitals": "^6.2.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^6.3.1"
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^4.1.11",
+    "jsdom": "^30.0.1",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "scripts": {
     "start": "vite --host 0.0.0.0 --port 3000",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
   }
 }
