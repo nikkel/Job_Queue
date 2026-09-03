@@ -46,6 +46,17 @@ const TaskTable = () => {
 
   return (
     <div className='row'>
+      <PropagateLoader
+        color={'#000000'}
+        loading={isLoading}
+        cssOverride={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translate(-50%)',
+          padding: '10px',
+        }}
+        size={10}
+      />
       <table className='table table-bordered'>
         <thead className='thead-light'>
           <tr>
@@ -58,17 +69,6 @@ const TaskTable = () => {
           </tr>
         </thead>
         <tbody>
-          <PropagateLoader
-            color={'#000000'}
-            loading={isLoading}
-            cssOverride={{
-              position: 'absolute',
-              left: '50%',
-              transform: 'translate(-50%)',
-              padding: '10px',
-            }}
-            size={10}
-          />
           {data &&
             data.map((task) => (
               <tr key={task.id}>

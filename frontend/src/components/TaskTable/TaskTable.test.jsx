@@ -37,6 +37,16 @@ describe('TaskTable', () => {
     expect(screen.getByRole('table')).toBeInTheDocument();
   });
 
+  test('the loading spinner is not nested inside tbody (only <tr> is valid there)', () => {
+    Api.task.getAll.mockResolvedValue({ tasks: [] });
+    const { container } = render(<TaskTable />);
+
+    const tbody = container.querySelector('tbody');
+    for (const child of tbody.children) {
+      expect(child.tagName).toBe('TR');
+    }
+  });
+
   test('polls the task list and renders fetched rows', async () => {
     Api.task.getAll.mockResolvedValue({
       tasks: [
