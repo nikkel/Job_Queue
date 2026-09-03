@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import Api from '../../api';
 import Swal from 'sweetalert2';
-import PropagateLoader from 'react-spinners/PropagateLoader';
+import { PropagateLoader } from 'react-spinners';
 
 const TaskTable = () => {
   const [data, setData] = useState([]);

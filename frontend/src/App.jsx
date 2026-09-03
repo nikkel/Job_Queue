@@ -3,7 +3,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { userContext } from './contexts/userContext';
 import Api from './api';
 
-import CircleLoader from 'react-spinners/CircleLoader';
+import { CircleLoader } from 'react-spinners';
 import { css } from '@emotion/react';
 import './App.css';
 
