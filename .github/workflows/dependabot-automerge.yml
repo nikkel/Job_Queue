@@ -15,6 +15,11 @@ on: pull_request
 permissions:
   contents: write
   pull-requests: write
+  # Needed specifically for Dependabot PRs that touch .github/workflows/*
+  # (e.g. github-actions ecosystem updates) — without this, the merge is
+  # refused with "refusing to allow a GitHub App to ... update workflow
+  # ... without `workflows` permission".
+  workflows: write
 
 jobs:
   dependabot:
