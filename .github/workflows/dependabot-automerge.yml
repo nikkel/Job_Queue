@@ -6,8 +6,18 @@
 #   2. Settings -> Branches -> add a protection rule for `main` that requires
 #      the `Backend tests (pytest)` and `Frontend tests (vitest)` status
 #      checks (from ci.yml) before merging.
-# Without both of those, `gh pr merge --auto` below will queue the merge but
-# it will never actually complete.
+#   3. A repo secret named DEPENDABOT_AUTOMERGE_PAT: a classic GitHub PAT
+#      with the `repo` + `workflow` scopes. The default GITHUB_TOKEN is
+#      unconditionally blocked by GitHub from writing to
+#      .github/workflows/* (this can't be granted via `permissions:` --
+#      `workflows` is not a valid key there, and there is no key that
+#      unlocks it for GITHUB_TOKEN). Without this secret, PRs on the
+#      `github-actions` Dependabot ecosystem (which touch workflow files)
+#      will fail to auto-merge even though everything else works; the step
+#      below falls back to GITHUB_TOKEN if the secret isn't set, so npm/pip
+#      PRs still auto-merge fine in the meantime.
+# Without all three, `gh pr merge --auto` below will queue the merge but it
+# will never actually complete (or, for workflow-file PRs, will fail outright).
 name: Dependabot auto-merge
 
 on: pull_request
@@ -31,4 +41,4 @@ jobs:
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_PAT || secrets.GITHUB_TOKEN }}
