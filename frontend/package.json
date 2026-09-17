@@ -7,7 +7,7 @@
     "@emotion/react": "^11.14.0",
     "axios": "^1.20.0",
     "react": "^19.3.0",
-    "react-dom": "^19.2.8",
+    "react-dom": "^19.3.0",
     "react-spinners": "^0.17.1",
     "sweetalert2": "^11.26.25",
     "web-vitals": "^6.2.1"
