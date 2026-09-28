@@ -10,7 +10,7 @@
     "react-dom": "^19.3.0",
     "react-spinners": "^0.17.1",
     "sweetalert2": "^11.26.25",
-    "web-vitals": "^6.2.1"
+    "web-vitals": "^6.2.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",
