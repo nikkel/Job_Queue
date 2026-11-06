@@ -5,19 +5,21 @@
 #   1. Settings -> General -> Pull Requests -> enable "Allow auto-merge".
 #   2. Settings -> Branches -> add a protection rule for `main` that requires
 #      the `Backend tests (pytest)` and `Frontend tests (vitest)` status
-#      checks (from ci.yml) before merging.
-#   3. A repo secret named DEPENDABOT_AUTOMERGE_PAT: a classic GitHub PAT
-#      with the `repo` + `workflow` scopes. The default GITHUB_TOKEN is
-#      unconditionally blocked by GitHub from writing to
-#      .github/workflows/* (this can't be granted via `permissions:` --
-#      `workflows` is not a valid key there, and there is no key that
-#      unlocks it for GITHUB_TOKEN). Without this secret, PRs on the
-#      `github-actions` Dependabot ecosystem (which touch workflow files)
-#      will fail to auto-merge even though everything else works; the step
-#      below falls back to GITHUB_TOKEN if the secret isn't set, so npm/pip
-#      PRs still auto-merge fine in the meantime.
-# Without all three, `gh pr merge --auto` below will queue the merge but it
-# will never actually complete (or, for workflow-file PRs, will fail outright).
+#      checks (from ci.yml) before merging. Leave "Require branches to be up
+#      to date" off, or each merge makes the remaining PRs need a rebase.
+# Without both, `gh pr merge --auto` below either merges immediately without
+# waiting for CI or fails with "Protected branch rules not configured".
+#
+# Optional: a Dependabot secret (Settings -> Secrets and variables ->
+# Dependabot; Dependabot PRs can't read Actions secrets) named
+# DEPENDABOT_AUTOMERGE_PAT, holding a fine-grained PAT limited to this repo
+# with read/write on Contents, Pull requests and Workflows. An expired PAT
+# makes auto-merge fail rather than fall back. Without the secret, the step
+# below uses GITHUB_TOKEN, which has two limitations:
+#   - Its merges don't trigger push workflows on `main`. ci.yml also runs on a
+#     weekly schedule to compensate.
+#   - `github-actions` PRs, which touch workflow files, may need merging by
+#     hand. npm and pip PRs are unaffected.
 name: Dependabot auto-merge
 
 on: pull_request
